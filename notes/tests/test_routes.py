@@ -60,6 +60,7 @@ class TestRoutes(TestCase):
         urls = (
             ('notes:list', None),
             ('notes:add', None),
+            ('notes:success', None),
             ('notes:detail', self.note.slug),
             ('notes:edit', self.note.slug),
             ('notes:delete', self.note.slug)
@@ -74,3 +75,8 @@ class TestRoutes(TestCase):
                 redirect_url = f'{login_url}?next={url}'
                 response = self.client.get(url)
                 self.assertRedirects(response, redirect_url)
+
+    def test_availability_success_page_for_autentificated_user(self):
+        self.client.force_login(self.author)
+        response = self.client.get(reverse('notes:success'))
+        self.assertEqual(response.status_code, HTTPStatus.OK)

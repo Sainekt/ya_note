@@ -1,6 +1,5 @@
 # test_content.py
 import pytest
-
 from django.urls import reverse
 
 from notes.forms import NoteForm

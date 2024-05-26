@@ -45,7 +45,7 @@ class TestNoteCreation(TestCase):
         self.assertEqual(note.slug, self.SLUG)
         self.assertEqual(note.author, self.user)
 
-    def test_user_cant_use_bad_slug(self):
+    def test_user_cant_use_one_slug_two_try(self):
         response = self.auth_user.post(self.url_add_page, data=self.form_data)
         response = self.auth_user.post(self.url_add_page, data=self.form_data)
         self.assertFormError(
@@ -86,15 +86,14 @@ class TestNoteEditDelete(TestCase):
         cls.url_edit = reverse('notes:edit', args=(cls.note.slug,))
         cls.url_succes = reverse('notes:success')
         cls.url_delete = reverse('notes:delete', args=(cls.note.slug,))
-        cls.form_data = {'title': cls.TEXT,'text': cls.NEW_TEXT}
-        
+        cls.form_data = {'title': cls.TEXT, 'text': cls.NEW_TEXT}
 
     def test_author_can_delete_note(self):
         response = self.auth_user.delete(self.url_delete)
         self.assertRedirects(response, self.url_succes)
         note_count = Note.objects.count()
         self.assertEqual(note_count, 0)
-    
+
     def test_another_user_cant_delete_note_of_user(self):
         response = self.auth_another.delete(self.url_delete)
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
@@ -102,7 +101,7 @@ class TestNoteEditDelete(TestCase):
         self.assertEqual(note_count, 1)
 
     def test_user_can_edit_his_note(self):
-        response = self.auth_user.post(self.url_edit, data=self.form_data) 
+        response = self.auth_user.post(self.url_edit, data=self.form_data)
         self.assertRedirects(response, self.url_succes)
         self.note.refresh_from_db()
         self.assertEqual(self.note.title, self.TEXT)
